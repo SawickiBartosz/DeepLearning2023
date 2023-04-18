@@ -34,6 +34,7 @@ class PaddingZeros(object):
         padding = torch.zeros(1, diff)
         return torch.cat([padding, wave], dim=1), sample_rate
 
+
 class CustomSpectogram(object):
     def __init__(self, n_fft, power):
         self.spec = Spectrogram(n_fft=n_fft, power=power)
