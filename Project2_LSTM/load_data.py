@@ -7,11 +7,12 @@ from torchvision.datasets import DatasetFolder
 
 
 class AudioTrainDataset(DatasetFolder):
-    def __init__(self, root, transform=None) -> None:
+    def __init__(self, root, transform=None, target_transform=None) -> None:
         super().__init__(root,
                          loader=load,
                          extensions=(".wav",),
-                         transform=transform)
+                         transform=transform,
+                         target_transform=target_transform)
 
     def find_classes(self, directory: str) -> Tuple[List[str], Dict[str, int]]:
         classes_list, classes_dict = super().find_classes(directory)
@@ -40,4 +41,23 @@ class CustomSpectogram(object):
         self.spec = Spectrogram(n_fft=n_fft, power=power)
 
     def __call__(self, sample):
-        return self.spec(sample[0]), sample[1]
+        return self.spec(sample[0])
+
+
+class TargetEncoder:
+
+    def __init__(self, class_dict, commands=None):
+        if commands is None:
+            commands = ["yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"]
+        self.class_dict = class_dict
+        self.commands = commands
+
+    def __call__(self, y):
+        class_name = self.class_dict[y]
+        if class_name in self.commands:
+            y_enc = self.commands.index(class_name)
+        elif class_name != "silence":
+            y_enc = len(self.commands)
+        else:
+            y_enc = len(self.commands) + 1
+        return torch.nn.functional.one_hot(torch.LongTensor([y_enc]), len(self.commands) + 2).squeeze().to(torch.float)
