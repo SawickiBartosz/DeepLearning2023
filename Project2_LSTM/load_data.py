@@ -41,7 +41,7 @@ class CustomSpectogram(object):
         self.spec = Spectrogram(n_fft=n_fft, power=power)
 
     def __call__(self, sample):
-        return self.spec(sample[0])
+        return self.spec(sample[0]).transpose(-1, -2)
 
 
 class TargetEncoder:
