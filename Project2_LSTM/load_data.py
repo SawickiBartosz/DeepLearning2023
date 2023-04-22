@@ -44,6 +44,13 @@ class CustomSpectogram(object):
         return self.spec(sample[0]).transpose(-1, -2)
 
 
+class RemoveSampleRate(object):
+    def __init__(self):
+        super().__init__()
+
+    def __call__(self, sample):
+        return sample[0][0]
+
 class TargetEncoder:
 
     def __init__(self, class_dict, commands=None):
