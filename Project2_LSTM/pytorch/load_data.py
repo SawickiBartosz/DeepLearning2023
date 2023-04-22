@@ -2,7 +2,7 @@ from typing import Tuple, List, Dict
 
 import torch
 from torchaudio.backend.soundfile_backend import load
-from torchaudio.transforms import Spectrogram
+from torchaudio.transforms import Spectrogram, MelSpectrogram
 from torchvision.datasets import DatasetFolder
 
 
@@ -68,3 +68,12 @@ class TargetEncoder:
         else:
             y_enc = len(self.commands) + 1
         return torch.nn.functional.one_hot(torch.LongTensor([y_enc]), len(self.commands) + 2).squeeze().to(torch.float)
+
+
+class NormalizedMelSpectogram:
+
+    def __init__(self, sample_rate=16000, n_fft=1024, hop_length=128):
+        self.spec = MelSpectrogram(sample_rate, n_fft=n_fft, hop_length=hop_length, normalized=True)
+
+    def __call__(self, sample, *args, **kwargs):
+        return torch.log(self.spec(sample[0]).permute(0, 2, 1))
