@@ -128,3 +128,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 /Project1/cifar-10/
+/Project1/train_val_test
+/Project2_LSTM/data
+/Project2_LSTM/group_data
+/Project2_LSTM/tensorflow-speech-recognition-challenge
+/Project3_GAN/lsun_bedroom
